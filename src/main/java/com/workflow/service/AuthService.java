@@ -12,7 +12,11 @@ public class AuthService {
 
     public User login(String email, String password){
         Validation.validateEmail(email);
-        Validation.validatePassword(password);
+        if (password == null || password.trim().isEmpty()) {
+            throw new AuthenticationException(
+                    "Password cannot be empty"
+            );
+        }
 
         User user = userDao.findByEmail(email.trim());
         if(user == null){

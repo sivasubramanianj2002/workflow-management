@@ -9,6 +9,7 @@ public class User {
     private String email;
     private String password;
     private Role role;
+    private Long managerId;
 
     public User() {
     }
@@ -17,12 +18,13 @@ public class User {
                 String name,
                 String email,
                 String password,
-                Role role) {
+                Role role,Long managerId) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.managerId = managerId;
     }
 
     public Long getId() {
@@ -64,4 +66,8 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public void setManagerId(Long managerId) { this.managerId = managerId;}
+
+    public Long getManagerId(){ return managerId;}
 }

@@ -26,6 +26,6 @@ public class UserService {
         user.setEmail(email);
         user.setPassword(password);
         user.setRole(Role.MTS);
-        return true;
+        return userDao.createUser(user);
     }
 }

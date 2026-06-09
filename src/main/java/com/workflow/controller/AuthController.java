@@ -21,31 +21,20 @@ public class AuthController {
             System.out.println("\n===== LOGIN =====");
 
             System.out.print("Email: ");
-            String email =
-                    scanner.nextLine();
+            String email = scanner.nextLine();
 
             System.out.print("Password: ");
-            String password =
-                    scanner.nextLine();
+            String password = scanner.nextLine();
 
             try {
 
-                User user =
-                        authService.login(
-                                email,
-                                password
-                        );
+                User user = authService.login(email, password);
 
-                if (user.getRole() ==
-                        Role.MLS) {
-
-                    MlsController
-                            .showMenu(user);
+                if (user.getRole() == Role.MLS) {
+                    MlsController.showMenu(user);
 
                 } else {
-
-                    MtsController
-                            .showMenu(user);
+                    MtsController.showMenu(user);
                 }
 
             } catch (Exception e) {

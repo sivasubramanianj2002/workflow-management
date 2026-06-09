@@ -12,15 +12,6 @@ import java.sql.ResultSet;
 import java.util.List;
 
 public class UserDaoImpl implements UserDao {
-
-    @Override
-    public User login(String email, String password) {
-        User user = findByEmail(email);
-        if(user == null) return null;
-        boolean verify = PasswordHashing.verifyPassword(password, user.getPassword());
-        return verify ? user : null;
-    }
-
     @Override
     public boolean createUser(User user) {
 
@@ -69,7 +60,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findByEmail(String email){
         String sql = """
-                SELECT * FROM users WHERE email = ? AND password = ?
+                SELECT * FROM users WHERE email = ?
                 """;
         try(Connection connection = DbConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(sql)){
@@ -78,6 +69,7 @@ public class UserDaoImpl implements UserDao {
             if(rs.next()) {
                 User user = new User();
                 user.setId(rs.getLong("id"));
+                user.setPassword(rs.getString("password"));
                 user.setName(rs.getString("name"));
                 user.setEmail(rs.getString("email"));
                 user.setRole(Role.valueOf(rs.getString("role")));
