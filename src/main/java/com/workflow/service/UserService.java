@@ -7,10 +7,12 @@ import com.workflow.exceptions.DuplicateEmailException;
 import com.workflow.model.User;
 import com.workflow.util.Validation;
 
+import java.util.List;
+
 public class UserService {
     private UserDao userDao = new UserDaoImpl();
 
-    public boolean createMts(String name, String email,String password){
+    public boolean createMts(String name, String email,String password, Long managerId){
 
         Validation.validateName(name);
         Validation.validateEmail(email);
@@ -26,6 +28,11 @@ public class UserService {
         user.setEmail(email);
         user.setPassword(password);
         user.setRole(Role.MTS);
+        user.setManagerId(managerId);
         return userDao.createUser(user);
+    }
+
+    public List<User> getMyTeam(Long managerId){
+        return userDao.findByManagerId(managerId);
     }
 }

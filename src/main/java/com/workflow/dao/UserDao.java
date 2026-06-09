@@ -9,4 +9,6 @@ public interface UserDao {
     boolean createUser(User user);
 
     User findByEmail(String email);
+
+    List<User>findByManagerId(Long managerId);
 }

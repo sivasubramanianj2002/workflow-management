@@ -3,6 +3,8 @@ package com.workflow.controller;
 import com.workflow.model.User;
 import com.workflow.service.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MlsController {
@@ -12,32 +14,21 @@ public class MlsController {
     public static void showMenu(User user) {
 
         while(true) {
-            System.out.println(
-                    "\nWelcome MLS "
-                            + user.getName()
-            );
+            System.out.println("\nWelcome MLS " + user.getName());
+            System.out.println("1. Create MTS");
 
-            System.out.println(
-                    "1. Create MTS"
-            );
-
-            System.out.println(
-                    "2. View Users"
-            );
-
-            System.out.println(
-                    "3. Logout"
-            );
+            System.out.println("2. My Team");
+            System.out.println("3. Logout");
             System.out.println("Enter your choice:");
             String choiceInput = sc.nextLine();
             int choice = Integer.parseInt(choiceInput);
 
             switch (choice) {
                 case 1:
-                    createMtsScreen();
+                    createMtsScreen(user);
                     break;
                 case 2:
-                    viewUsers();
+                    viewUsers(user);
                     break;
                 default:
                     System.out.println("Invalid choice");
@@ -47,7 +38,7 @@ public class MlsController {
 
     }
 
-    private static void createMtsScreen() {
+    private static void createMtsScreen(User manager) {
         System.out.println("\n===== CREATE MTS USER =====");
         try {
             System.out.print("Enter Name: ");
@@ -62,7 +53,8 @@ public class MlsController {
             boolean created = userService.createMts(
                     name,
                     email,
-                    password
+                    password,
+                    manager.getId()
             );
 
             if (created) {
@@ -83,7 +75,32 @@ public class MlsController {
         }
     }
 
-    private static void viewUsers(){
-        return;
+    private static void viewUsers(User manager){
+        List<User> team = userService.getMyTeam(manager.getId());
+        System.out.println("\n===== MY TEAM =====");
+        if (team.isEmpty()) {
+            System.out.println("No team members found.");
+            return;
+        }
+        System.out.printf(
+                "%-5s %-20s %-30s%n",
+                "ID",
+                "NAME",
+                "EMAIL"
+        );
+
+        System.out.println(
+                "--------------------------------------------------------"
+        );
+
+        for (User member : team) {
+
+            System.out.printf(
+                    "%-5d %-20s %-30s%n",
+                    member.getId(),
+                    member.getName(),
+                    member.getEmail()
+            );
+        }
     }
 }

@@ -9,6 +9,8 @@ import com.workflow.util.PasswordHashing;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoImpl implements UserDao {
@@ -20,9 +22,10 @@ public class UserDaoImpl implements UserDao {
                 name,
                 email,
                 password,
-                role
+                role,
+                manager_id
             )
-            VALUES (?, ?, ?, ?)
+            VALUES (?, ?, ?, ?,?)
             """;
 
         try (
@@ -47,6 +50,11 @@ public class UserDaoImpl implements UserDao {
                     4,
                     user.getRole().name()
             );
+            if(user.getManagerId() == null){
+                statement.setNull(5, Types.BIGINT);
+            }else{
+                statement.setLong(5,user.getManagerId());
+            }
 
             return statement.executeUpdate() > 0;
 
@@ -73,6 +81,7 @@ public class UserDaoImpl implements UserDao {
                 user.setName(rs.getString("name"));
                 user.setEmail(rs.getString("email"));
                 user.setRole(Role.valueOf(rs.getString("role")));
+                user.setManagerId(rs.getObject("manager_id", Long.class));
                 return user;
             }
         }catch (Exception e){
@@ -80,5 +89,30 @@ public class UserDaoImpl implements UserDao {
 
         }
         return null;
+    }
+
+    @Override
+    public List<User>findByManagerId(Long managerId){
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE manager_id = ?";
+        try(
+            Connection connection =  DbConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setLong(1, managerId);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                User user = new User();
+                user.setId(rs.getLong("id"));
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setRole(Role.valueOf(rs.getString("role")));
+                user.setManagerId(rs.getObject("manager_id",Long.class));
+                users.add(user);
+            }
+
+        }catch (Exception e){
+           e.printStackTrace();
+        }
+        return users;
     }
 }

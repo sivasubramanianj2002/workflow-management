@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         AuthController auth = new AuthController();
         Seeder s = new Seeder();
-//        s.seed();
+//         s.seed();
         auth.start();
     }
 }

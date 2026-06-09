@@ -13,6 +13,7 @@ public class Seeder {
         defaultManager.setEmail("jayadoss@zoho.com");
         defaultManager.setRole(Role.MLS);
         defaultManager.setPassword("jayadoss@1234");
+        defaultManager.setManagerId(null);
         userDao.createUser(defaultManager);
         System.out.println("Default MLS created");
     }
