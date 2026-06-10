@@ -57,4 +57,32 @@ public class Validation {
         }
     }
 
+    public static void validateProjectName(String name){
+        if (name == null || name.trim().isEmpty()) {
+            throw new ValidationException(
+                    "Project name cannot be empty"
+            );
+        }
+
+        if (name.trim().length() < 3) {
+            throw new ValidationException(
+                    "Project name must contain at least 3 characters"
+            );
+        }
+    }
+
+    public static void validateProjectDescription(String description){
+        if (description == null || description.trim().isEmpty()) {
+            throw new ValidationException(
+                    "Project description cannot be empty"
+            );
+        }
+
+        if (description.trim().length() < 20) {
+            throw new ValidationException(
+                    "Project description must contain at least 20 characters"
+            );
+        }
+    }
+
 }

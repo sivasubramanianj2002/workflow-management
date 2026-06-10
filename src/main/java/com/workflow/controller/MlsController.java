@@ -1,6 +1,7 @@
 package com.workflow.controller;
 
 import com.workflow.model.User;
+import com.workflow.service.ProjectService;
 import com.workflow.service.UserService;
 
 import java.util.ArrayList;
@@ -10,14 +11,14 @@ import java.util.Scanner;
 public class MlsController {
     private static Scanner sc = new Scanner(System.in);
     private static UserService userService = new UserService();
-
+    private static ProjectService projectService = new ProjectService();
     public static void showMenu(User user) {
 
         while(true) {
             System.out.println("\nWelcome MLS " + user.getName());
             System.out.println("1. Create MTS");
-
             System.out.println("2. My Team");
+            System.out.println("3. Create project");
             System.out.println("3. Logout");
             System.out.println("Enter your choice:");
             String choiceInput = sc.nextLine();
@@ -29,6 +30,9 @@ public class MlsController {
                     break;
                 case 2:
                     viewUsers(user);
+                    break;
+                case 3:
+                    createProjectScreen(user);
                     break;
                 default:
                     System.out.println("Invalid choice");
@@ -100,6 +104,39 @@ public class MlsController {
                     member.getId(),
                     member.getName(),
                     member.getEmail()
+            );
+        }
+    }
+
+    private static void createProjectScreen(User manager){
+        System.out.println("\n===== CREATE A PROJECT =====");
+        try {
+            System.out.print("Enter Project Name: ");
+            String name = sc.nextLine();
+
+            System.out.print("Enter Description: ");
+            String description = sc.nextLine();
+
+            boolean created = projectService.createProject(
+                    name,
+                    description,
+                    manager.getId()
+            );
+
+            if (created) {
+                System.out.println(
+                        "\nProject Created Successfully."
+                );
+            } else {
+                System.out.println(
+                        "\nFailed To Create Project."
+                );
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "\nError: " + e.getMessage()
             );
         }
     }
