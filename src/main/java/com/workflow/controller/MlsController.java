@@ -19,7 +19,8 @@ public class MlsController {
             System.out.println("1. Create MTS");
             System.out.println("2. My Team");
             System.out.println("3. Create project");
-            System.out.println("3. Logout");
+            System.out.println("4. View my project");
+            System.out.println("5. Logout");
             System.out.println("Enter your choice:");
             String choiceInput = sc.nextLine();
             int choice = Integer.parseInt(choiceInput);
@@ -34,6 +35,8 @@ public class MlsController {
                 case 3:
                     createProjectScreen(user);
                     break;
+                case 4:
+                    viewMyProjects();
                 default:
                     System.out.println("Invalid choice");
                     break;
@@ -139,5 +142,9 @@ public class MlsController {
                     "\nError: " + e.getMessage()
             );
         }
+    }
+
+    public static void viewMyProjects(User manager){
+
     }
 }
