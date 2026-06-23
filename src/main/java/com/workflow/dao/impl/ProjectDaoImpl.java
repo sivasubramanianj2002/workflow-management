@@ -7,6 +7,7 @@ import com.workflow.util.DbConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectDaoImpl implements ProjectDao {
@@ -31,7 +32,27 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public List<Project>findByManagerId(String managerId){
-        return null;
+    public List<Project>findByManagerId(Long managerId){
+        List<Project> projects = new ArrayList<>();
+        String sql = """
+                SELECT * FROM projects WHERE manager_id = ? ORDER BY id
+                """;
+        try(Connection connection = DbConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+        ){
+            statement.setLong(1,managerId);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                Project project = new Project();
+                project.setId(rs.getLong("id"));
+                project.setName(rs.getString("name"));
+                project.setManagerId(rs.getLong("manager_id"));
+                project.setDescription(rs.getString("description"));
+                projects.add(project);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return projects;
     }
 }

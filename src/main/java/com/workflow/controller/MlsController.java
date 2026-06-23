@@ -1,7 +1,9 @@
 package com.workflow.controller;
 
+import com.workflow.model.Project;
 import com.workflow.model.User;
 import com.workflow.service.ProjectService;
+import com.workflow.service.TaskService;
 import com.workflow.service.UserService;
 
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ public class MlsController {
     private static Scanner sc = new Scanner(System.in);
     private static UserService userService = new UserService();
     private static ProjectService projectService = new ProjectService();
+    private static TaskService taskService = new TaskService();
     public static void showMenu(User user) {
 
         while(true) {
@@ -19,8 +22,9 @@ public class MlsController {
             System.out.println("1. Create MTS");
             System.out.println("2. My Team");
             System.out.println("3. Create project");
-            System.out.println("4. View my project");
-            System.out.println("5. Logout");
+            System.out.println("4. Create Tasks");
+            System.out.println("5. View my projects");
+            System.out.println("6. Logout");
             System.out.println("Enter your choice:");
             String choiceInput = sc.nextLine();
             int choice = Integer.parseInt(choiceInput);
@@ -36,7 +40,11 @@ public class MlsController {
                     createProjectScreen(user);
                     break;
                 case 4:
-                    viewMyProjects();
+                    createTaskScreen(user);
+                    break;
+                case 5:
+                    viewMyProjects(user);
+                    break;
                 default:
                     System.out.println("Invalid choice");
                     break;
@@ -143,8 +151,107 @@ public class MlsController {
             );
         }
     }
+    private static void createTaskScreen(User manager) {
+
+        System.out.println("\n===== CREATE TASK =====");
+
+        try {
+
+            List<Project> projects = projectService.getMyProjects(manager.getId());
+
+            if (projects.isEmpty()) {
+
+                System.out.println(
+                        "No projects found. Create a project first."
+                );
+
+                return;
+            }
+
+            System.out.println(
+                    "\n===== MY PROJECTS ====="
+            );
+
+            for (Project project : projects) {
+                System.out.println(project.getId() + " - " + project.getName());
+            }
+
+            System.out.print("\nEnter Project ID: ");
+
+            Long projectId  = sc.nextLong();
+
+            // Display team members
+
+            List<User> team = userService.getMyTeam(manager.getId());
+
+            if (team.isEmpty()) {
+
+                System.out.println(
+                        "No team members found.");
+
+                return;
+            }
+
+            System.out.println(
+                    "\n===== MY TEAM ====="
+            );
+
+            for (User mts : team) {
+                System.out.println(mts.getId() + " - " + mts.getName());
+            }
+
+            System.out.print(
+                    "\nAssign To (User ID): "
+            );
+
+            long assignedTo = sc.nextLong();
+
+            System.out.print(
+                    "Task Title: "
+            );
+
+            String title =
+                    sc.nextLine();
+
+            System.out.print(
+                    "Task Description: "
+            );
+
+            String description =
+                    sc.nextLine();
+
+            boolean created = taskService.createTask(projectId, title, description, Long.valueOf(assignedTo), manager.getId());
+
+            if (created) {
+                System.out.println("\nTask Created Successfully.");
+
+            } else {
+
+                System.out.println(
+                        "\nFailed To Create Task."
+                );
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "\nError: "
+                            + e.getMessage()
+            );
+        }
+    }
 
     public static void viewMyProjects(User manager){
-
+        List<Project>projects = projectService.getMyProjects(manager.getManagerId());
+        System.out.println("\n===== MY PROJECTS =====");
+        if (projects.isEmpty()) {
+            System.out.println("No projects found.");
+            return;
+        }
+        System.out.printf("%-5s %-25s%n", "ID", "PROJECT NAME");
+        System.out.println("-------------------------------------");
+        for(Project project : projects){
+            System.out.printf("%-5d %-25s%n", project.getId(), project.getName());
+        }
     }
 }

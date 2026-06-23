@@ -85,4 +85,32 @@ public class Validation {
         }
     }
 
+    public static void validateTaskName(String name){
+        if (name == null || name.trim().isEmpty()) {
+            throw new ValidationException(
+                    "Task name cannot be empty"
+            );
+        }
+
+        if (name.trim().length() < 3) {
+            throw new ValidationException(
+                    "Task name must contain at least 3 characters"
+            );
+        }
+    }
+
+    public static void validateTaskDescription(String description){
+        if (description == null || description.trim().isEmpty()) {
+            throw new ValidationException(
+                    "Task description cannot be empty"
+            );
+        }
+
+        if (description.trim().length() < 20) {
+            throw new ValidationException(
+                    "Task description must contain at least 20 characters"
+            );
+        }
+    }
+
 }

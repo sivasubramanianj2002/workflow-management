@@ -7,6 +7,6 @@ import java.util.List;
 public interface ProjectDao {
     boolean createProject(Project project);
 
-    List<Project>findByManagerId(String managerId);
+    List<Project>findByManagerId(Long managerId);
 }
 
