@@ -1,6 +1,8 @@
 package com.workflow.controller;
 
+import com.workflow.exceptions.ProjectNotFoundException;
 import com.workflow.model.Project;
+import com.workflow.model.Task;
 import com.workflow.model.User;
 import com.workflow.service.ProjectService;
 import com.workflow.service.TaskService;
@@ -24,7 +26,8 @@ public class MlsController {
             System.out.println("3. Create project");
             System.out.println("4. Create Tasks");
             System.out.println("5. View my projects");
-            System.out.println("6. Logout");
+            System.out.println("6. View Project tasks");
+            System.out.println("7. Logout");
             System.out.println("Enter your choice:");
             String choiceInput = sc.nextLine();
             int choice = Integer.parseInt(choiceInput);
@@ -45,6 +48,12 @@ public class MlsController {
                 case 5:
                     viewMyProjects(user);
                     break;
+                case 6:
+                    viewProjectTasks(user);
+                    break;
+                case 7:
+                    System.out.println("Logged out successfully");
+                    return;
                 default:
                     System.out.println("Invalid choice");
                     break;
@@ -178,8 +187,18 @@ public class MlsController {
 
             System.out.print("\nEnter Project ID: ");
 
-            Long projectId  = sc.nextLong();
+            long projectId  = Long.parseLong(sc.nextLine());
 
+            boolean validProject = projects.stream()
+                    .anyMatch(project ->
+                            project.getId().equals(projectId)
+                    );
+
+            if (!validProject) {
+                throw new ProjectNotFoundException(
+                        "Invalid Project ID"
+                );
+            }
             // Display team members
 
             List<User> team = userService.getMyTeam(manager.getId());
@@ -204,7 +223,17 @@ public class MlsController {
                     "\nAssign To (User ID): "
             );
 
-            long assignedTo = sc.nextLong();
+            long assignedTo = Long.parseLong(sc.nextLine());
+            boolean validTeamMember = team.stream()
+                    .anyMatch(user ->
+                            user.getId().equals(assignedTo)
+                    );
+
+            if (!validTeamMember) {
+                throw new IllegalArgumentException(
+                        "User does not belong to your team"
+                );
+            }
 
             System.out.print(
                     "Task Title: "
@@ -242,7 +271,7 @@ public class MlsController {
     }
 
     public static void viewMyProjects(User manager){
-        List<Project>projects = projectService.getMyProjects(manager.getManagerId());
+        List<Project>projects = projectService.getMyProjects(manager.getId());
         System.out.println("\n===== MY PROJECTS =====");
         if (projects.isEmpty()) {
             System.out.println("No projects found.");
@@ -252,6 +281,84 @@ public class MlsController {
         System.out.println("-------------------------------------");
         for(Project project : projects){
             System.out.printf("%-5d %-25s%n", project.getId(), project.getName());
+        }
+    }
+
+    public static void viewProjectTasks(User manager) {
+        System.out.println(
+                "\n===== VIEW PROJECT TASKS ====="
+        );
+
+        try {
+
+            List<Project> projects =
+                    projectService.getMyProjects(
+                            manager.getId()
+                    );
+
+            if (projects.isEmpty()) {
+
+                System.out.println(
+                        "No projects found."
+                );
+
+                return;
+            }
+
+            System.out.println(
+                    "\n===== MY PROJECTS ====="
+            );
+
+            for (Project project : projects) {
+
+                System.out.println(
+                        project.getId()
+                                + " - "
+                                + project.getName()
+                );
+            }
+
+            System.out.print(
+                    "\nEnter Project ID: "
+            );
+
+            Long projectId =
+                    Long.parseLong(
+                            sc.nextLine()
+                    );
+
+            List<Task> tasks =
+                    taskService.getTasksByProject(
+                            projectId,
+                            projects
+                    );
+
+            if (tasks.isEmpty()) {
+
+                System.out.println("\nNo tasks found.");
+
+                return;
+            }
+
+            System.out.println("\n===== PROJECT TASKS =====");
+
+            for (Task task : tasks) {
+
+                System.out.println("\nTask ID : " + task.getId());
+
+                System.out.println("Title : " + task.getTitle());
+
+                System.out.println("Description : " + task.getDescription());
+
+                System.out.println("Assigned To : " + task.getAssignedTo());
+
+                System.out.println("Status : " + task.getStatus());
+
+                System.out.println("--------------------------------");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error : " + e.getMessage());
         }
     }
 }

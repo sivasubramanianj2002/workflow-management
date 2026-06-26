@@ -2,6 +2,7 @@ package com.workflow.util;
 
 import com.workflow.exceptions.ValidationException;
 
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Validation {
@@ -112,5 +113,4 @@ public class Validation {
             );
         }
     }
-
 }

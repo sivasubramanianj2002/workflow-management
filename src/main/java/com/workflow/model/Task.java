@@ -11,6 +11,7 @@ public class Task {
     private String description;
     private Long assignedTo;
     private Long createdBy;
+    private String manager_name;
     private TaskStatus status;
     private Date createdAt;
 
@@ -68,6 +69,13 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public void setManagerName(String name){
+        this.manager_name = name;
+    }
+    public String getManagerName(){
+        return manager_name;
     }
 
 }

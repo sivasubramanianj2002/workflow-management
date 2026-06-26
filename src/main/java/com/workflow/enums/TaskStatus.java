@@ -1,5 +1,5 @@
 package com.workflow.enums;
 
 public enum TaskStatus {
-    TODO,PENDING,COMPLETED
+    TODO,IN_PROGRESS,COMPLETED
 }
