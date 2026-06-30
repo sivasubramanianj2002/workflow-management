@@ -8,6 +8,10 @@ import com.workflow.service.ProjectService;
 import com.workflow.service.TaskService;
 import com.workflow.service.UserService;
 
+import javax.swing.text.DateFormatter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -248,8 +252,43 @@ public class MlsController {
 
             String description =
                     sc.nextLine();
+            LocalDate dueDate = null;
 
-            boolean created = taskService.createTask(projectId, title, description, Long.valueOf(assignedTo), manager.getId());
+            while (true) {
+
+                try {
+
+                    System.out.print(
+                            "Enter Due Date (dd/MM/yyyy): "
+                    );
+
+                    DateTimeFormatter formatter =
+                            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                    dueDate = LocalDate.parse(
+                            sc.nextLine(),
+                            formatter
+                    );
+
+                    if (dueDate.isBefore(LocalDate.now())) {
+
+                        System.out.println(
+                                "Due Date must not be in the past."
+                        );
+
+                        continue;
+                    }
+
+                    break; // valid date
+
+                } catch (DateTimeParseException e) {
+
+                    System.out.println(
+                            "Invalid date format. Use dd/MM/yyyy."
+                    );
+                }
+            }
+            boolean created = taskService.createTask(projectId, title, description, Long.valueOf(assignedTo), manager.getId(),dueDate);
 
             if (created) {
                 System.out.println("\nTask Created Successfully.");
@@ -353,6 +392,8 @@ public class MlsController {
                 System.out.println("Assigned To : " + task.getAssignedTo());
 
                 System.out.println("Status : " + task.getStatus());
+
+                System.out.println("Due Date : " + task.getDueDate());
 
                 System.out.println("--------------------------------");
             }

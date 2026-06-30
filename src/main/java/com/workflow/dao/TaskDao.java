@@ -8,5 +8,6 @@ import java.util.List;
 public interface TaskDao {
     boolean createTask(Task task);
     List<Task> findTaskByMts(Long mtsId);
+    List<Task> findByProjectId(Long projectId);
     boolean updateTaskStatus(Long taskId, TaskStatus status);
 }

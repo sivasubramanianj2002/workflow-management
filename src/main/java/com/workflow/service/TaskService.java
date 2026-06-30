@@ -10,13 +10,14 @@ import com.workflow.model.Task;
 import com.workflow.model.User;
 import com.workflow.util.Validation;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class TaskService {
     private TaskDao taskDao = new TaskDaoImpl();
     private ProjectDao projectDao = new ProjectDaoImpl();
 
-    public boolean createTask(Long projectId, String title,String description,Long assignedTo, Long createdBy){
+    public boolean createTask(Long projectId, String title, String description, Long assignedTo, Long createdBy, LocalDate dueDate){
         Validation.validateTaskName(title);
         Validation.validateTaskDescription(description);
         Task task = new Task();
@@ -26,6 +27,7 @@ public class TaskService {
         task.setAssignedTo(assignedTo);
         task.setCreatedBy(createdBy);
         task.setStatus(TaskStatus.TODO);
+        task.setDueDate(dueDate);
         return taskDao.createTask(task);
     }
 
@@ -51,7 +53,7 @@ public class TaskService {
         if(!valid){
             throw new IllegalArgumentException("Invalid project ID");
         }
-        return;
+        return taskDao.findByProjectId(projectId);
     }
 
 }

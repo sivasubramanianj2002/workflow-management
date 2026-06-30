@@ -77,6 +77,10 @@ public class MtsController {
                     "Status : "
                             + task.getStatus()
             );
+            System.out.println(
+                    "Due Date : "
+                            + task.getDueDate()
+            );
 
             System.out.println(
                     "Created By : "

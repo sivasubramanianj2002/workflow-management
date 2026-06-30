@@ -5,8 +5,8 @@ import java.sql.Connection;
 
 public class DbConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/workflow_management_system";
-    private static final String USERNAME = "siva";
-    private static final String PASSWORD = "Siva@12345";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "root";
 
     public static Connection getConnection() {
         try {

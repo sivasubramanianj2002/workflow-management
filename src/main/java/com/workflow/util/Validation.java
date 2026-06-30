@@ -2,6 +2,7 @@ package com.workflow.util;
 
 import com.workflow.exceptions.ValidationException;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -111,6 +112,13 @@ public class Validation {
             throw new ValidationException(
                     "Task description must contain at least 20 characters"
             );
+        }
+    }
+
+    public static void validateDueDate(LocalDate dueDate){
+        if(dueDate.isBefore(LocalDate.now())){
+            throw new ValidationException(
+                    "Due Date must not be a past");
         }
     }
 }

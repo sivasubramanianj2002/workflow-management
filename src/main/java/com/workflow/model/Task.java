@@ -2,6 +2,7 @@ package com.workflow.model;
 
 import com.workflow.enums.TaskStatus;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Task {
@@ -14,6 +15,7 @@ public class Task {
     private String manager_name;
     private TaskStatus status;
     private Date createdAt;
+    private LocalDate dueDate;
 
     public Long getId() {
         return id;
@@ -76,6 +78,14 @@ public class Task {
     }
     public String getManagerName(){
         return manager_name;
+    }
+
+    public void setDueDate(LocalDate dueDate){
+        this.dueDate = dueDate;
+    }
+
+    public LocalDate getDueDate(){
+        return dueDate;
     }
 
 }
